@@ -17,28 +17,39 @@ import { createMiddleware } from "hono/factory";
 
 import { AUTH_COOKIE } from "@/features/auth/constantes";
 
-export const sessionMiddleware = createMiddleware(async (c, next) => {
-  const client = new Client()
-    .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
-    .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!);
+type AdditionalContext = {
+  Variables: {
+    account: AccountType;
+    databases: DatabasesType;
+    storage: StorageType;
+    Users: UsersType;
+    user: Models.User<Models.Preferences>;
+  };
+};
 
-  const session = getCookie(c, AUTH_COOKIE);
+export const sessionMiddleware = createMiddleware<AdditionalContext>(
+  async (c, next) => {
+    const client = new Client()
+      .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
+      .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!);
 
-  if (!session) return c.json({ error: "Unauthorized" }, 401);
+    const session = getCookie(c, AUTH_COOKIE);
 
-  client.setSession(session);
+    if (!session) return c.json({ error: "Unauthorized" }, 401);
 
-  const account = new Account(client);
-  const databases = new Databases(client);
-  const storage = new Storage(client);
+    client.setSession(session);
 
-  const user = await account.get();
+    const account = new Account(client);
+    const databases = new Databases(client);
+    const storage = new Storage(client);
 
+    const user = await account.get();
 
-  
+    c.set("account", account);
+    c.set("databases", databases);
+    c.set("storage", storage);
+    c.set("user", user);
 
-  // 2:56:05 !!!!
-
-
-
-});
+    await next();
+  }
+);
