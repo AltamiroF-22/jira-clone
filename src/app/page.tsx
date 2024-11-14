@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useCurrent } from "@/features/auth/api/use-current";
 import { useLogout } from "@/features/auth/api/use-logout";
 import { Button } from "@/components/ui/button";
+import { UserButton } from "@/features/auth/components/use-button";
 
 export default function Home() {
   const router = useRouter();
@@ -22,13 +23,12 @@ export default function Home() {
   const handleLogout = () => {
     mutate();
   };
-  
+
   return (
     <div className="">
-      <p>Only visible to authorized users.</p>
-      <Button variant={"outline"} onClick={handleLogout}>
-        Logout
-      </Button>
+      <UserButton />
     </div>
   );
 }
+
+// HORA 3:25:00
