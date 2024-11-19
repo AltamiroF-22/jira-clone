@@ -1,28 +1,11 @@
-"use client";
-
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-
-import { useCurrent } from "@/features/auth/api/use-current";
-import { useLogout } from "@/features/auth/api/use-logout";
-import { Button } from "@/components/ui/button";
+import { getCurrent } from "@/features/auth/action";
 import { UserButton } from "@/features/auth/components/use-button";
+import { redirect } from "next/navigation";
 
-export default function Home() {
-  const router = useRouter();
-  const { data, isLoading } = useCurrent();
-  const { mutate } = useLogout();
+export default async function Home() {
+  const currentUser = await getCurrent();
 
-  useEffect(() => {
-    if (!data && !isLoading) {
-      router.push("/sign-in");
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data]);
-
-  const handleLogout = () => {
-    mutate();
-  };
+  if (!currentUser) redirect("/sign-in");
 
   return (
     <div className="">
@@ -30,5 +13,3 @@ export default function Home() {
     </div>
   );
 }
-
-// HORA 3:25:00
