@@ -1,5 +1,6 @@
 import { getCurrent } from "@/features/auth/action";
 import { UserButton } from "@/features/auth/components/use-button";
+import { CreateWorkspaceForm } from "@/features/workspace/components/create-workspace-form";
 import { redirect } from "next/navigation";
 
 export default async function Home() {
@@ -7,5 +8,9 @@ export default async function Home() {
 
   if (!currentUser) redirect("/sign-in");
 
-  return <div className="">this is a home page</div>;
+  return (
+    <div className="">
+      <CreateWorkspaceForm />
+    </div>
+  );
 }

@@ -1,3 +1,5 @@
 import { z } from "zod";
 
-// 04:11:20git 
+export const createWorkspaceSchema = z.object({
+  name: z.string().trim().min(1, "Required"),
+});
